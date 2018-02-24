@@ -1,0 +1,115 @@
+body {
+  color: white;
+  height: 100vh;
+  margin: 0;
+  background-color: #314259;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica, Helvetica Neue,
+    Arial, sans-serif;
+}
+
+li {
+  list-style: none;
+}
+
+ul {
+  padding: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+main {
+  padding-top: 3rem;
+  width: 50%;
+  margin: auto;
+}
+
+section {
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  border-width: 0;
+  color: #fff;
+  background-color: #314259;
+  transition: all 300ms;
+  font-size: 2.5rem;
+  border-bottom: 5px solid rgba(254, 254, 254, 0.63);
+}
+
+.input::-webkit-input-placeholder{
+  color: rgba(255,255,255, 0.5);
+}
+
+.input:focus,
+.input:active {
+  outline: none;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
+  border-bottom-color: #fff;
+}
+
+.todo-item {
+  background-color: #fff;
+  color: #767676;
+  margin: 1rem 0;
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+}
+
+.todo-item span {
+  flex: 10;
+}
+
+.button {
+  flex: 1;
+  padding: 1rem;
+  margin: 1rem;
+  margin-left: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.remove {
+  background-color: #ec4570;
+  color: #fff;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.remove:hover {
+  background-color: hsla(344, 80%, 40%, 1);
+}
+
+.complete {
+  background-color: #45ec90;
+}
+
+.checked {
+  text-decoration: line-through;
+}
+
+.error {
+  min-height: 18px;
+  color: #ec4570;
+}
+
+@media (max-width: 600px){
+  main {
+    width: 90%;
+    margin: 0 auto;
+  }
+}

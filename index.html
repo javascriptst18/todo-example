@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <title>Todo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <main>
+        <div class="input-wrapper">
+            <label for="input-field" hidden>Add todo</label>
+            <input type="text" class="input" id="input-field" placeholder="Add todo">
+            <p class="error"> </p>
+        </div>
+        <section>
+            <h2>Incomplete todos</h2>
+            <ul id="incomplete-todos"></ul>
+        </section>
+        <section>
+            <h2>Complete todos</h2>
+            <ul id="complete-todos"></ul>
+        </section>
+        <button class="button remove" id="clear-all">Clear all</button>
+    </main>
+    <script src="main.js"></script>
+</body>
+
+</html>
