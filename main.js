@@ -83,6 +83,7 @@ function removeTodo() {
   todoArray = todoArray.filter(function(todo) {
     return todo.id !== listItem.id;
   });
+  saveToLocalStorage(todoArray);
 }
 
 /* toggle function bound to the checkbox-button. Gets the container
@@ -102,7 +103,6 @@ function toggleTodo() {
   } else {
     incompleteTodosList.appendChild(todoItem);
   }
-  
 }
 
 /*
@@ -134,6 +134,7 @@ function createAndStoreTodoItem(newTodoValue) {
     resetInput();
     // This function removes any error if present (my own function)
     resetError();
+    saveToLocalStorage(todoArray);
   } else {
     // If the input is empty, display error
     displayError(`You cannot add an empty todo`);
@@ -179,6 +180,7 @@ function resetInput(){
  * default to be added to the `incompleteTodosList`-ul
  */
 function loadTodos() {
+  todoArray = getFromLocalStorage(todoArray);
   for (const todo of todoArray) {
     const newTodoElement = createTodoElement(todo);
     if (todo.complete) {
@@ -193,6 +195,19 @@ function loadTodos() {
 function clearAllTodos(){
   incompleteTodosList.innerHTML = "";
   completeTodosList.innerHTML = "";
+}
+
+function getFromLocalStorage(todoArray){
+  const dataFromLocalStorage = localStorage.getItem('todos');
+  if(dataFromLocalStorage){
+    return JSON.parse(dataFromLocalStorage);
+  }
+  return todoArray;
+}
+
+function saveToLocalStorage(todoArray){
+  const stringifiedArray = JSON.stringify(todoArray);
+  localStorage.setItem('todos', stringifiedArray);
 }
 
 /* We add a listener for onchange, which is when we press enter or blur out of
