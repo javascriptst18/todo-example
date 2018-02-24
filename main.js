@@ -40,12 +40,30 @@ function generateID() {
  * otherwise I'm returning an empty string and do not set that class.
  */
 function createTodoElement(newTodo) {
-  return `
-    <li class="todo-item" id=${newTodo.id}>
-      <span class="${newTodo.complete ? 'checked': ''}">${newTodo.text}</span>
-      <button class="button remove"> ✖︎ </button>
-      <button class="button complete"> ✔︎ </button>
-    </li>`;
+  const listItemElement = document.createElement('li');
+  const spanElement = document.createElement('span');
+  const removeButtonElement = document.createElement('button');
+  const toggleCompleteButtonElement = document.createElement('button');
+
+  listItemElement.classList.add('todo-item');
+  listItemElement.id = newTodo.id;
+
+  if(newTodo.complete){
+    spanElement.classList.add('checked');
+  }
+  
+  spanElement.innerText = newTodo.text;
+  removeButtonElement.classList.add('button', 'remove');
+  removeButtonElement.innerText = '✖︎';
+  removeButtonElement.addEventListener('click', removeTodo);
+  toggleCompleteButtonElement.classList.add('button', 'complete');
+  toggleCompleteButtonElement.innerText = "✔︎";
+  toggleCompleteButtonElement.addEventListener('click', toggleTodo);
+
+  listItemElement.appendChild(spanElement);
+  listItemElement.appendChild(removeButtonElement);
+  listItemElement.appendChild(toggleCompleteButtonElement);
+  return listItemElement;
 }
 
 /* This function is bound to an eventlistener further down. Removes the todo
@@ -60,13 +78,13 @@ function removeTodo() {
   const container = this.parentElement.parentElement;
   /* Remove from DOM */
   container.removeChild(listItem);
-  /* And replace the current array of items with a filtered copy of the array.
-   * `.filter()` takes a function as an argument. Return everything except
-   * the object which matches the id of the item we are trying to remove.
-   */
-  todoArray = todoArray.filter(function(todo) {
-    return todo.id !== listItem.id;
-  });
+  /* Loop through the array and find the item with the same ID as the one 
+   * we clicked on, splice that item, removing it from the array */
+  for(let i = 0; i < todoArray.length; i++) {
+    if(todoArray[i].id === listItem.id){
+      todoArray.splice(i, 1);
+    }
+  }
 }
 
 /* toggle function bound to the checkbox-button. Gets the container
@@ -75,35 +93,20 @@ function removeTodo() {
  * automatically, we don't need to removeChild() after we appended it
  */
 function toggleTodo() {
+
   const todoItem = this.parentElement;
   const container = this.parentElement.parentElement;
   /* I added the 'checked' class which does line-through on the span
    * inside of the element, that's why I'm using `firstElementChild` and
    * not applying the class directly to the element */
   todoItem.firstElementChild.classList.toggle('checked');
+
   if (container === incompleteTodosList) {
     completeTodosList.appendChild(todoItem);
   } else {
     incompleteTodosList.appendChild(todoItem);
   }
   
-}
-
-/* We send along the ID of our todo item to this function which:
- * 1. gets the buttons for remove and complete for the individual item
- * 2. add onclick eventlisteners for each button (remove and complete)
- * The function removeTodo is added to the remove button
- * and the function toggleTodo is added to the complete button, this happens
- * every time we add a new item to the DOM because we call this function inside
- * of `createAndStoreTodoItem`. This must be done when we use template literals
- * and `insertAdjacentHTML` because we can't add an event listener to a string.
- * We wouldn't have to do this if we used `createElement`.
- */
-function addListenersToListItem(listItemId) {
-  const removeButton = document.querySelector(`#${listItemId} .remove`);
-  const completeButton = document.querySelector(`#${listItemId} .complete`);
-  removeButton.addEventListener('click', removeTodo);
-  completeButton.addEventListener('click', toggleTodo);
 }
 
 /*
@@ -130,9 +133,7 @@ function createAndStoreTodoItem(newTodoValue) {
     // Also create a new element to add to the DOM
     const newTodoElement = createTodoElement(newTodo);
     // Add it at the end of the list
-    incompleteTodosList.insertAdjacentHTML('afterbegin', newTodoElement);
-    // Then we also have to bind the events to the buttons on this new item
-    addListenersToListItem(newTodo.id);
+    incompleteTodosList.appendChild(newTodoElement);
     // This function Clear the input field  (my own function)
     resetInput();
     // This function removes any error if present (my own function)
@@ -185,14 +186,10 @@ function loadTodos() {
   for (const todo of todoArray) {
     const newTodoElement = createTodoElement(todo);
     if (todo.complete) {
-      completeTodosList.insertAdjacentHTML('afterbegin', newTodoElement);
+      completeTodosList.appendChild(newTodoElement);
     } else {
-      incompleteTodosList.insertAdjacentHTML('afterbegin', newTodoElement);
+      incompleteTodosList.appendChild(newTodoElement);
     }
-    /* Regardless of which list it is added to, we must add event listeners to each
-     * of the items in the lists 
-     */
-    addListenersToListItem(todo.id);
   }
 }
 
