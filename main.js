@@ -25,7 +25,8 @@ let todoArray = [
 
 /* The function that generates a random string to use as an id. It doesn't really matter
  * how the ID looks just that it is 'unique' so we can easily distinguish each individual
- * todo so we can filter and remove each todo and don't have to use index to filter.
+ * todo so we can filter and remove each todo and don't have to use index to filter. This is
+ * a helper function i found on the internet.
  */
 function generateID() {
   return `_${Math.random().toString(36).substr(2, 9)}`;
@@ -60,13 +61,13 @@ function removeTodo() {
   const container = this.parentElement.parentElement;
   /* Remove from DOM */
   container.removeChild(listItem);
-  /* And replace the current array of items with a filtered copy of the array.
-   * `.filter()` takes a function as an argument. Return everything except
-   * the object which matches the id of the item we are trying to remove.
-   */
-  todoArray = todoArray.filter(function(todo) {
-    return todo.id !== listItem.id;
-  });
+  /* Loop through the array and find the item with the same ID as the one 
+   * we clicked on, splice that item, removing it from the array */
+  for(let i = 0; i < todoArray.length; i++) {
+    if(todoArray[i].id === listItem.id){
+      todoArray.splice(i, 1);
+    }
+  }
 }
 
 /* toggle function bound to the checkbox-button. Gets the container
@@ -75,12 +76,14 @@ function removeTodo() {
  * automatically, we don't need to removeChild() after we appended it
  */
 function toggleTodo() {
+
   const todoItem = this.parentElement;
   const container = this.parentElement.parentElement;
   /* I added the 'checked' class which does line-through on the span
    * inside of the element, that's why I'm using `firstElementChild` and
    * not applying the class directly to the element */
   todoItem.firstElementChild.classList.toggle('checked');
+
   if (container === incompleteTodosList) {
     completeTodosList.appendChild(todoItem);
   } else {
@@ -100,10 +103,12 @@ function toggleTodo() {
  * We wouldn't have to do this if we used `createElement`.
  */
 function addListenersToListItem(listItemId) {
+
   const removeButton = document.querySelector(`#${listItemId} .remove`);
   const completeButton = document.querySelector(`#${listItemId} .complete`);
   removeButton.addEventListener('click', removeTodo);
   completeButton.addEventListener('click', toggleTodo);
+
 }
 
 /*
