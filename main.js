@@ -47,9 +47,11 @@ function createTodoElement(newTodo) {
 
   listItemElement.classList.add('todo-item');
   listItemElement.id = newTodo.id;
+
   if(newTodo.complete){
     spanElement.classList.add('checked');
   }
+
   spanElement.innerText = newTodo.text;
   removeButtonElement.classList.add('button', 'remove');
   removeButtonElement.innerText = '✖︎';
@@ -76,13 +78,13 @@ function removeTodo() {
   const container = this.parentElement.parentElement;
   /* Remove from DOM */
   container.removeChild(listItem);
-  /* And replace the current array of items with a filtered copy of the array.
-   * `.filter()` takes a function as an argument. Return everything except
-   * the object which matches the id of the item we are trying to remove.
-   */
-  todoArray = todoArray.filter(function(todo) {
-    return todo.id !== listItem.id;
-  });
+
+  /* For localstorage, remove the item from the array as well */
+  for(let i = 0; i < todoArray.length; i++) {
+    if(todoArray[i].id === listItem.id){
+      todoArray.splice(i, 1);
+    }
+  }
   saveToLocalStorage(todoArray);
 }
 
@@ -97,12 +99,20 @@ function toggleTodo() {
   /* I added the 'checked' class which does line-through on the span
    * inside of the element, that's why I'm using `firstElementChild` and
    * not applying the class directly to the element */
+  
   todoItem.firstElementChild.classList.toggle('checked');
   if (container === incompleteTodosList) {
     completeTodosList.appendChild(todoItem);
   } else {
     incompleteTodosList.appendChild(todoItem);
   }
+  /* For localstorage, toggle complete in the array as well */
+  for(let i = 0; i < todoArray.length; i++) {
+    if(todoArray[i].id === todoItem.id){
+      todoArray[i].complete = !todoArray[i].complete;
+    }
+  }
+  saveToLocalStorage(todoArray);
 }
 
 /*
@@ -195,6 +205,7 @@ function loadTodos() {
 function clearAllTodos(){
   incompleteTodosList.innerHTML = "";
   completeTodosList.innerHTML = "";
+  localStorage.clear();
 }
 
 function getFromLocalStorage(todoArray){
